@@ -73,7 +73,7 @@ function CompareHub() {
       <div className="mt-10 rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-8 text-center">
         <p className="text-gray-500 font-medium">More comparisons coming soon</p>
         <p className="mt-1 text-sm text-gray-400">
-          AI image generators, SEO tools, video editors — we're testing them all.
+          AI video generators, SEO tools, free SaaS alternatives — we're testing them all.
         </p>
       </div>
     </div>

@@ -45,8 +45,12 @@ function calculateValueScore(tool: Omit<Tool, "free_tier_value_score">): number 
   else if (words >= 5_000) score += 1;
   else if (words > 0) score += 0; // trial-only, negligible long-term value
 
-  // Has images or other media free
-  if ((tool.free_tier_limits.images_per_month ?? 0) > 0) score += 1;
+  // Image generation generosity (relative scale)
+  const images = tool.free_tier_limits.images_per_month ?? 0;
+  if (images >= 100) score += 3;
+  else if (images >= 25) score += 2;
+  else if (images >= 5) score += 1;
+
   if ((tool.free_tier_limits.minutes_per_month ?? 0) > 0) score += 1;
 
   return Math.min(score, 10);
@@ -188,6 +192,147 @@ const rawTools: Omit<Tool, "free_tier_value_score">[] = [
     requires_credit_card: false,
     truly_free: true,
   },
+  // --- AI Image Generators ---
+  {
+    name: "Leonardo.ai",
+    slug: "leonardo-ai",
+    category: "AI Image Generators",
+    description:
+      "Professional-grade AI image generator with a generous free tier. Great for game assets, marketing visuals, and product mockups. No credit card required to start.",
+    url: "https://leonardo.ai",
+    pricing_tiers: [
+      { name: "Free", price_monthly: 0, notes: "150 images/month, no credit card" },
+      { name: "Apprentice", price_monthly: 12, notes: "8,500 images/month, faster generation" },
+      { name: "Artisan", price_monthly: 30, notes: "25,000 images/month, video generation" },
+      { name: "Maestro", price_monthly: 60, notes: "60,000 images/month, priority support" },
+    ],
+    affiliate_link: undefined,
+    affiliate_network: undefined,
+    commission_rate: undefined,
+    logo_url: "",
+    free_tier_limits: {
+      images_per_month: 150,
+      description: "150 images per month. No credit card required. Includes basic generation, upscaling, and community models. Generous for testing and light use.",
+    },
+    requires_credit_card: false,
+    truly_free: true,
+  },
+  {
+    name: "Canva AI",
+    slug: "canva-ai",
+    category: "AI Image Generators",
+    description:
+      "All-in-one design platform with AI image generation built in. Massive template library plus Magic Media for AI-generated images — perfect for small business owners.",
+    url: "https://www.canva.com",
+    pricing_tiers: [
+      { name: "Free", price_monthly: 0, notes: "50 AI image credits lifetime, no credit card" },
+      { name: "Pro", price_monthly: 15, notes: "500 AI image credits/month, premium templates" },
+      { name: "Teams", price_monthly: 30, notes: "1,000 AI image credits/month, brand kit" },
+    ],
+    affiliate_link: "https://www.canva.com/affiliates",
+    affiliate_network: "Impact",
+    commission_rate: "$3-5 per signup",
+    logo_url: "",
+    free_tier_limits: {
+      images_per_month: 50,
+      description: "50 AI image generation credits total (lifetime, not monthly). No credit card required. Includes full design editor, 250K+ templates, and 5GB cloud storage.",
+    },
+    requires_credit_card: false,
+    truly_free: true,
+  },
+  {
+    name: "Adobe Firefly",
+    slug: "adobe-firefly",
+    category: "AI Image Generators",
+    description:
+      "Adobe's generative AI for images, vectors, and text effects. Built into Photoshop and Express. Best for designers already in the Adobe ecosystem.",
+    url: "https://firefly.adobe.com",
+    pricing_tiers: [
+      { name: "Free", price_monthly: 0, notes: "25 credits/month, no credit card" },
+      { name: "Creative Cloud", price_monthly: 60, notes: "100 credits/month, full CC suite" },
+      { name: "Enterprise", price_monthly: 0, notes: "Custom pricing, unlimited credits" },
+    ],
+    affiliate_link: undefined,
+    affiliate_network: undefined,
+    commission_rate: undefined,
+    logo_url: "",
+    free_tier_limits: {
+      images_per_month: 25,
+      description: "25 generative credits per month. No credit card required for free tier. Includes text-to-image, generative fill, and text effects with Adobe watermark.",
+    },
+    requires_credit_card: false,
+    truly_free: true,
+  },
+  {
+    name: "RunwayML",
+    slug: "runwayml",
+    category: "AI Image Generators",
+    description:
+      "AI-powered creative suite for video and image generation. Best for content creators who need both image and video AI tools in one platform.",
+    url: "https://runwayml.com",
+    pricing_tiers: [
+      { name: "Free", price_monthly: 0, notes: "125 credits/month, no credit card" },
+      { name: "Standard", price_monthly: 15, notes: "625 credits/month, higher resolution" },
+      { name: "Pro", price_monthly: 35, notes: "2,250 credits/month, priority generation" },
+      { name: "Unlimited", price_monthly: 95, notes: "Unlimited video generations" },
+    ],
+    affiliate_link: undefined,
+    affiliate_network: undefined,
+    commission_rate: undefined,
+    logo_url: "",
+    free_tier_limits: {
+      images_per_month: 125,
+      description: "125 credits per month (1 image ≈ 5-10 credits depending on settings). No credit card required. Includes Gen-3 video, image-to-image, and basic export.",
+    },
+    requires_credit_card: false,
+    truly_free: true,
+  },
+  {
+    name: "Midjourney",
+    slug: "midjourney",
+    category: "AI Image Generators",
+    description:
+      "Industry-leading AI image generator known for stunning artistic quality and photorealistic output. No free tier — paid only, but results are unmatched for premium visuals.",
+    url: "https://www.midjourney.com",
+    pricing_tiers: [
+      { name: "Basic", price_monthly: 10, notes: "~200 images/month, 3 concurrent jobs" },
+      { name: "Standard", price_monthly: 30, notes: "Unlimited relaxed mode, 15hr fast GPU" },
+      { name: "Pro", price_monthly: 60, notes: "30hr fast GPU, stealth mode" },
+      { name: "Mega", price_monthly: 120, notes: "60hr fast GPU, max concurrency" },
+    ],
+    affiliate_link: undefined,
+    affiliate_network: undefined,
+    commission_rate: undefined,
+    logo_url: "",
+    free_tier_limits: {
+      description: "No free tier available. Midjourney is paid-only starting at $10/month. They occasionally run free trial promotions, but there is no permanent free tier.",
+    },
+    requires_credit_card: true,
+    truly_free: false,
+  },
+  {
+    name: "DALL·E",
+    slug: "dall-e",
+    category: "AI Image Generators",
+    description:
+      "OpenAI's image generator, accessible through ChatGPT Plus and the API. Excellent at understanding complex prompts and producing consistent, high-quality images for business use.",
+    url: "https://openai.com/dall-e",
+    pricing_tiers: [
+      { name: "ChatGPT Free", price_monthly: 0, notes: "2 images/day via ChatGPT, no credit card" },
+      { name: "ChatGPT Plus", price_monthly: 20, notes: "50+ images/day via ChatGPT, priority" },
+      { name: "API Pay-as-you-go", price_monthly: 0, notes: "~$0.04-0.08/image, no subscription" },
+    ],
+    affiliate_link: undefined,
+    affiliate_network: undefined,
+    commission_rate: undefined,
+    logo_url: "",
+    free_tier_limits: {
+      images_per_month: 60,
+      description: "~2 images per day via ChatGPT free tier (~60/month). No credit card required for ChatGPT. Images have OpenAI watermark. API requires pre-paid credits.",
+    },
+    requires_credit_card: false,
+    truly_free: true,
+  },
 ];
 
 export const tools: Tool[] = rawTools.map((t) => ({
@@ -213,5 +358,11 @@ export const comparisonCategories = [
     title: "AI Writing Tools",
     description: "Side-by-side comparison of the best free and paid AI writing assistants — real free tier limits, pricing, and which ones don't need a credit card.",
     toolCount: tools.filter((t) => t.category === "AI Writing").length,
+  },
+  {
+    slug: "ai-image-generators",
+    title: "AI Image Generators",
+    description: "Side-by-side comparison of the best AI image generators for small business — real free tier limits, output quality, and which tools don't require a credit card.",
+    toolCount: tools.filter((t) => t.category === "AI Image Generators").length,
   },
 ];

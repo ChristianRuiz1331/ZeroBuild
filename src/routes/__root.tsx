@@ -93,6 +93,12 @@ function SiteHeader() {
             Compare
           </Link>
           <Link
+            to="/directory"
+            className="text-gray-600 hover:text-indigo-600 transition-colors [&.active]:text-indigo-600"
+          >
+            Directory
+          </Link>
+          <Link
             to="/calculator"
             className="text-gray-600 hover:text-indigo-600 transition-colors [&.active]:text-indigo-600"
           >
@@ -145,6 +151,12 @@ function SiteFooter() {
               className="text-sm text-gray-500 hover:text-indigo-600 transition-colors"
             >
               AI Writing Tools
+            </Link>
+            <Link
+              to="/directory"
+              className="text-sm text-gray-500 hover:text-indigo-600 transition-colors"
+            >
+              Free AI Tools Directory
             </Link>
             <Link
               to="/about"
