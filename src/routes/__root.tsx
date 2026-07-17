@@ -93,6 +93,12 @@ function SiteHeader() {
             Compare
           </Link>
           <Link
+            to="/calculator"
+            className="text-gray-600 hover:text-indigo-600 transition-colors [&.active]:text-indigo-600"
+          >
+            Calculator
+          </Link>
+          <Link
             to="/about"
             className="text-gray-600 hover:text-indigo-600 transition-colors [&.active]:text-indigo-600"
           >
