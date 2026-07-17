@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@layer base {
+  html,
+  body {
+    @apply bg-white text-gray-900 antialiased;
+  }
+}
+
+/* Smooth transitions for interactive elements */
+a,
+button {
+  @apply transition-colors duration-150;
+}
+
+/* Blog content (prose-custom) styles — manual prose equivalent */
+.prose-custom {
+  @apply text-gray-700 leading-relaxed;
+}
+
+.prose-custom h2 {
+  @apply mt-10 mb-4 text-2xl font-semibold text-gray-900;
+}
+
+.prose-custom h3 {
+  @apply mt-8 mb-3 text-xl font-semibold text-gray-900;
+}
+
+.prose-custom p {
+  @apply mb-5 leading-relaxed;
+}
+
+.prose-custom ul,
+.prose-custom ol {
+  @apply my-4 pl-6 leading-relaxed list-disc;
+}
+
+.prose-custom ol {
+  @apply list-decimal;
+}
+
+.prose-custom li {
+  @apply mb-1.5;
+}
+
+.prose-custom strong {
+  @apply font-semibold text-gray-900;
+}
+
+.prose-custom a {
+  @apply text-indigo-600 no-underline hover:underline;
+}
