@@ -7,7 +7,7 @@ import {
   AffiliateBadge,
 } from "~/utils/affiliate";
 
-type SortKey = "name" | "free_value" | "free_words" | "paid_price" | "requires_cc";
+type SortKey = "name" | "free_value" | "free_words" | "free_images" | "paid_price" | "requires_cc";
 
 interface ToolComparisonProps {
   tools: Tool[];
@@ -15,7 +15,11 @@ interface ToolComparisonProps {
 }
 
 export default function ToolComparison({ tools, className }: ToolComparisonProps) {
-  const [sortKey, setSortKey] = useState<SortKey>("free_value");
+  // Auto-detect category: if all tools are AI Image Generators, show image metrics
+  const isImageCategory = tools.length > 0 && tools.every((t) => t.category === "AI Image Generators");
+
+  const defaultSort: SortKey = isImageCategory ? "free_images" : "free_words";
+  const [sortKey, setSortKey] = useState<SortKey>(defaultSort);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
 
   const sorted = useMemo(() => {
@@ -35,6 +39,10 @@ export default function ToolComparison({ tools, className }: ToolComparisonProps
         case "free_words":
           va = a.free_tier_limits.words_per_month ?? 0;
           vb = b.free_tier_limits.words_per_month ?? 0;
+          break;
+        case "free_images":
+          va = a.free_tier_limits.images_per_month ?? 0;
+          vb = b.free_tier_limits.images_per_month ?? 0;
           break;
         case "paid_price":
           va = a.pricing_tiers.find((t) => t.price_monthly > 0)?.price_monthly ?? 999;
@@ -82,6 +90,25 @@ export default function ToolComparison({ tools, className }: ToolComparisonProps
     return `${w}/mo`;
   };
 
+  const freeImagesDisplay = (tool: Tool): string => {
+    const i = tool.free_tier_limits.images_per_month;
+    if (i === undefined || i === 0) return "—";
+    if (i >= 1000) return `${(i / 1000).toFixed(0)}K/mo`;
+    return `${i}/mo`;
+  };
+
+  const freeLimitsDisplay = (tool: Tool): { value: string; label: string } => {
+    if (isImageCategory) {
+      const i = tool.free_tier_limits.images_per_month;
+      if (i === undefined || i === 0) return { value: "—", label: "" };
+      return { value: `${i}/mo`, label: "images" };
+    }
+    const w = tool.free_tier_limits.words_per_month;
+    if (w === undefined || w === 0) return { value: "—", label: "" };
+    if (w >= 1000) return { value: `${(w / 1000).toFixed(0)}K/mo`, label: "words" };
+    return { value: `${w}/mo`, label: "words" };
+  };
+
   const scoreColor = (score: number): string => {
     if (score >= 7) return "bg-green-100 text-green-800";
     if (score >= 4) return "bg-amber-100 text-amber-800";
@@ -96,14 +123,38 @@ export default function ToolComparison({ tools, className }: ToolComparisonProps
     className?: string;
   }
 
+  const freeLimitLabel = isImageCategory ? "Free Images" : "Free Words";
+  const activeFreeSortKey: SortKey = isImageCategory ? "free_images" : "free_words";
+
   const columns: ColDef[] = [
     { key: "name", label: "Tool", sortable: true, className: "text-left" },
-    { key: "free_words", label: "Free Limits", sortable: true, className: "text-left" },
+    { key: activeFreeSortKey, label: freeLimitLabel, sortable: true, className: "text-left" },
     { key: "paid_price", label: "Paid From", sortable: true, className: "text-left" },
     { key: "requires_cc", label: "No CC?", sortable: true, className: "text-center" },
     { key: "free_value", label: "Free Score", sortable: true, className: "text-center" },
     { key: "cta", label: "", sortable: false, className: "text-right" },
   ];
+
+  const renderFreeLimitCell = (tool: Tool) => {
+    if (isImageCategory) {
+      return (
+        <>
+          <span className="font-medium">{freeImagesDisplay(tool)}</span>
+          <p className="text-xs text-gray-400 mt-0.5 max-w-40">
+            {tool.free_tier_limits.description.slice(0, 60)}…
+          </p>
+        </>
+      );
+    }
+    return (
+      <>
+        <span className="font-medium">{freeWordsDisplay(tool)}</span>
+        <p className="text-xs text-gray-400 mt-0.5 max-w-40">
+          {tool.free_tier_limits.description.slice(0, 60)}…
+        </p>
+      </>
+    );
+  };
 
   return (
     <div className={className}>
@@ -144,10 +195,7 @@ export default function ToolComparison({ tools, className }: ToolComparisonProps
                   </div>
                 </td>
                 <td className="px-4 py-4 text-gray-700">
-                  <span className="font-medium">{freeWordsDisplay(tool)}</span>
-                  <p className="text-xs text-gray-400 mt-0.5 max-w-40">
-                    {tool.free_tier_limits.description.slice(0, 60)}…
-                  </p>
+                  {renderFreeLimitCell(tool)}
                 </td>
                 <td className="px-4 py-4 font-medium text-gray-900">
                   {firstPaidPrice(tool)}
@@ -204,7 +252,11 @@ export default function ToolComparison({ tools, className }: ToolComparisonProps
             <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
               <div>
                 <p className="text-xs text-gray-400">Free Tier</p>
-                <p className="font-medium text-gray-900">{freeWordsDisplay(tool)}</p>
+                {isImageCategory ? (
+                  <p className="font-medium text-gray-900">{freeImagesDisplay(tool)}</p>
+                ) : (
+                  <p className="font-medium text-gray-900">{freeWordsDisplay(tool)}</p>
+                )}
               </div>
               <div>
                 <p className="text-xs text-gray-400">Paid From</p>
@@ -270,6 +322,12 @@ function toolIcon(slug: string): string {
     rytr: "✍️",
     anyword: "📊",
     chatgpt: "🤖",
+    "leonardo-ai": "🎨",
+    "canva-ai": "🖼️",
+    "adobe-firefly": "🔥",
+    runwayml: "🎬",
+    midjourney: "🖌️",
+    "dall-e": "🤖",
   };
   return map[slug] ?? "🔧";
 }

@@ -61,6 +61,12 @@ function Home() {
               Compare AI Writing Tools →
             </Link>
             <Link
+              to="/compare/ai-image-generators"
+              className="rounded-xl bg-purple-600 px-8 py-3.5 text-base font-semibold text-white shadow-sm hover:bg-purple-700 transition-colors"
+            >
+              Compare AI Image Generators →
+            </Link>
+            <Link
               to="/compare"
               className="rounded-xl border border-gray-200 px-8 py-3.5 text-base font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
             >
@@ -166,6 +172,66 @@ function Home() {
                 </p>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Free Image Tools */}
+      <section className="bg-white py-20 sm:py-24">
+        <div className="mx-auto max-w-4xl px-6">
+          <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                Best Free AI Image Generators
+              </h2>
+              <p className="mt-2 text-gray-600">
+                These tools offer genuine free tiers — no credit card, no trial
+                expiration. Start creating images today.
+              </p>
+            </div>
+            <Link
+              to="/compare/ai-image-generators"
+              className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors"
+            >
+              Full comparison →
+            </Link>
+          </div>
+          <div className="mt-10 grid gap-6 sm:grid-cols-3">
+            {tools
+              .filter((t) => t.category === "AI Image Generators" && t.truly_free)
+              .slice(0, 3)
+              .map((tool) => (
+                <Link
+                  key={tool.slug}
+                  to="/compare/ai-image-generators"
+                  className="group rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md hover:border-indigo-200"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">
+                      <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                      Free Tier
+                    </span>
+                    <span className="text-xs text-gray-400">No CC</span>
+                  </div>
+                  <h3 className="mt-3 text-lg font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                    {tool.name}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                    {tool.description.slice(0, 120)}…
+                  </p>
+                  <div className="mt-4 flex items-center gap-2">
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-green-100 text-xs font-bold text-green-800">
+                      {tool.free_tier_value_score}
+                    </span>
+                    <span className="text-xs text-gray-500">Free Value Score</span>
+                  </div>
+                  <p className="mt-2 text-xs text-indigo-600 font-medium">
+                    {tool.free_tier_limits.images_per_month
+                      ? `${tool.free_tier_limits.images_per_month} images/mo free`
+                      : "Free tier available"}
+                  </p>
+                </Link>
+              ))}
           </div>
         </div>
       </section>
